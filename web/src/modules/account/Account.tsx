@@ -1,21 +1,24 @@
 import { gql } from "apollo-boost";
 import * as React from "react";
 import { Query } from "react-apollo";
+import { Redirect } from "react-router-dom";
 import { MeQuery } from "src/schemaTypes";
+import SubscribeUser from "./SubscribeUser";
 
 const meQuery = gql`
   query MeQuery {
     me {
       id
       email
+      type
     }
   }
 `;
 
-export class MeView extends React.PureComponent {
+export class Account extends React.PureComponent {
   render() {
     return (
-      <Query<MeQuery> query={meQuery}>
+      <Query<MeQuery> fetchPolicy="network-only" query={meQuery}>
         {({ data, loading }) => {
           if (loading) {
             return null;
@@ -26,10 +29,14 @@ export class MeView extends React.PureComponent {
           }
 
           if (!data.me) {
-            return <div>received no user</div>;
+            return <Redirect to="/login" />;
           }
 
-          return <div>{data.me.email}</div>;
+          if (data.me.type === "free-trial") {
+            return <SubscribeUser />;
+          }
+
+          return <Redirect to="/paid-users" />;
         }}
       </Query>
     );
