@@ -66,7 +66,7 @@ export class LoginView extends React.PureComponent<RouteComponentProps<{}>> {
                   this.props.history.push("/me");
                 }}
               >
-                register
+                login
               </button>
             </div>
           </div>
